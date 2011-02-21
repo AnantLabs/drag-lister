@@ -9,6 +9,8 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using System.IO;
+using System.Text;
 
 namespace DragGrabber
 {
@@ -52,7 +54,44 @@ namespace DragGrabber
         
         void SaveToolStripMenuItemClick(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            // anything to save
+            if (lbFiles.Items.Count ==0) return; //don't annoy user ..  
+            
+            // where to save
+            string FileName = "";
+            saveFileDialog1.DefaultExt ="txt";
+           
+            saveFileDialog1.ShowDialog();
+            FileName = saveFileDialog1.FileName;
+           
+            
+            if (FileName =="") return;  //user did not select a filename
+            
+            
+            // otherwise do it
+            
+            StringBuilder sb = new StringBuilder();
+            foreach( string s in lbFiles.Items )
+            {
+                sb.AppendLine(s);             
+                
+            }
+            
+            try {
+            SaveToFile(FileName,sb);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Problem Saving To File!","Error",MessageBoxButtons.OK ,MessageBoxIcon.Error);
+            }
+        }
+        void SaveToFile(string FileName, StringBuilder Contents)
+        {
+            using (StreamWriter op =  new StreamWriter(FileName))
+            {
+                op.Write(Contents.ToString());
+            }
+            
         }
         
         void ExitToolStripMenuItemClick(object sender, System.EventArgs e)
